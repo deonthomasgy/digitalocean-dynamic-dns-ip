@@ -78,7 +78,7 @@ type DOResponse struct {
 func GetConfig() ClientConfig {
     cmdHelp := flag.Bool("h", false, "Show the help message")
     cmdHelp2 := flag.Bool("help", false, "Show the help message")
-    ArgvIP := flag.String("ip", "190.80.8.11", "Set IP manually")
+    ArgvIP := flag.String("ip", "", "Set IP manually")
     flag.Parse()
 
     if *cmdHelp || *cmdHelp2 {
