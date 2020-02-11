@@ -28,6 +28,7 @@ var config ClientConfig
 // ClientConfig : configuration json
 type ClientConfig struct {
     APIKey          string   `json:"apiKey"`
+    ArgvIP          string   `json:"ArgvIP"`
     DOPageSize      int      `json:"doPageSize"`
     UseIPv4         *bool    `json:"useIPv4"`
     UseIPv6         *bool    `json:"useIPv6"`
@@ -77,6 +78,7 @@ type DOResponse struct {
 func GetConfig() ClientConfig {
     cmdHelp := flag.Bool("h", false, "Show the help message")
     cmdHelp2 := flag.Bool("help", false, "Show the help message")
+    ArgvIP := flag.String("ip", "190.80.8.11", "Set IP manually")
     flag.Parse()
 
     if *cmdHelp || *cmdHelp2 {
@@ -98,6 +100,7 @@ func GetConfig() ClientConfig {
     checkError(err)
     var config ClientConfig
     json.Unmarshal(getfile, &config)
+    config.ArgvIP = *ArgvIP
     checkError(err)
     return config
 }
@@ -337,6 +340,11 @@ func areZero(bs []byte) bool {
 func main() {
     config = GetConfig()
     currentIPv4, currentIPv6 := CheckLocalIPs()
+
+    if config.ArgvIP != "" {
+        currentIPv4 = net.ParseIP(config.ArgvIP)
+    }
+
     if currentIPv4 == nil && currentIPv6 == nil {
         log.Fatal("Current IP addresses are not valid, or both are disabled in the config. Check your configuration and internet connection.")
     }
